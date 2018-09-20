@@ -1,5 +1,6 @@
 from splinter import Browser
 from bs4 import BeautifulSoup
+import requests
 import pymongo
 import pandas as pd
 
@@ -13,7 +14,7 @@ def scrape():
     browser = init_browser()
 
     # store all scraped data
-    data = {}
+    mars_data = {}
     
 
 
@@ -26,8 +27,8 @@ def scrape():
 
     # Collecting news title and news paragraph
     results = soup1.find('div', class_='list_text')
-    data["news_title"] = results.find('div', class_='content_title').text
-    data["news_p"] = results.find('div', class_='article_teaser_body').text
+    mars_data["news_title"] = results.find('div', class_='content_title').text
+    mars_data["news_p"] = results.find('div', class_='article_teaser_body').text
 
 
 
@@ -39,7 +40,12 @@ def scrape():
     html2 = browser.html
     soup2 = BeautifulSoup(html2, 'html.parser')
 
-    data["featured_image_url"] = "https://www.jpl.nasa.gov" + soup2.find('a', class_='button fancybox')['data-fancybox-href']
+    # find featured image
+    result2 = soup2.find('a', class_='button fancybox')
+
+    featured_image_url = "https://www.jpl.nasa.gov" + result2['data-fancybox-href']
+
+    mars_data["featured_image_url"] = featured_image_url
 
 
 
@@ -55,7 +61,7 @@ def scrape():
     result3 = soup3.find('div', class_='js-tweet-text-container')
 
     # save tweet into variable 'mars_weather'
-    data["mars_weather"] = result3.find('p', class_='tweet-text').text
+    mars_data["mars_weather"] = result3.find('p', class_='tweet-text').text
 
 
 
@@ -72,7 +78,7 @@ def scrape():
 
     # convert the data to a HTML table string
     html_table = df.to_html()
-    data["html_table"] = html_table.replace('\n', '')
+    mars_data["html_table"] = html_table.replace('\n', '')
 
 
 
@@ -96,11 +102,11 @@ def scrape():
     url_2 = 'https://astrogeology.usgs.gov/search/map/Mars/Viking/schiaparelli_enhanced'
     browser.visit(url_2)
 
-    html = browser.html
-    soup = BeautifulSoup(html, 'html.parser')
+    html_2 = browser.html
+    soup_2 = BeautifulSoup(html_2, 'html.parser')
 
-    img_url_2 = soup.find('img', class_='wide-image')['src']
-    title_2 = soup.find('h2', class_="title").text
+    img_url_2 = soup_2.find('img', class_='wide-image')['src']
+    title_2 = soup_2.find('h2', class_="title").text
 
     # URL of USGS Astrogeology site third image
     url_3 = 'https://astrogeology.usgs.gov/search/map/Mars/Viking/syrtis_major_enhanced'
@@ -133,9 +139,9 @@ def scrape():
     hemisphere_image_urls.append(img3)
     hemisphere_image_urls.append(img4)
 
-    data["hemisphere_image_urls"] = hemisphere_image_urls
+    mars_data["hemisphere_image_urls"] = hemisphere_image_urls
 
 
 
     # return all scraped data
-    return data
+    return mars_data

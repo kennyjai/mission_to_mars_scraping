@@ -10,29 +10,80 @@
 </head>
 
 <body>
+
   <div class="container">
+
+    <!-- Create a scrape button to scrape new data -->
 
     <div class="jumbotron text-center">
       <h1>Mission to Mars</h1>
       <p><a class="btn btn-primary btn-lg" href="/scrape" role="button">Scrape New Data</a></p>
     </div>
 
+
     <!-- NASA MARS NEWS -->
 
-    {% for data in mars_data%}
-      <div class="col-lg-12">
-              <div class="card">
-                  <div class="card-body">
-                    <h3>Latest Mars News</h4>
-                    <h5>{{ data.news_title }}</h5>
-                    <small>{{ data.news_p }}</small>
-                  </div>
-                </div>
-            </div>
-        {% endfor %}
+    <div class="card">
+      <div class="row">
+        <div class="col-md-12">
+          <h3>Latest Mars News</h3>
+          <h5>{{ mars_data.news_title }}</h5>
+          <small>{{ mars_data.news_p }}</small>
+        </div>
+      </div>
+    </div>
 
+    <!-- Featured Mars Image, Current Weather, Mars Facts -->
+
+    <div class="card">
+      <div class="row">
+        <div class="col-md-8">
+          <h3>Featured Mars Image</h3>
+          <img src="{{ mars_data.featured_image_url }}" style="width:90%;height:80%;">
+        </div>
+
+        <div class="col-md-4">
+          <ul style="border: thin solid grey">
+            <h5>Current Weather on Mars</h5>
+            <small>{{ mars_data.mars_weather }}</small>
+          </ul>
+
+          <ul>
+            <h5>Mars Facts</h5>
+            {{ mars_data.html_table | safe}}
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mars Hemisphere Images -->
+
+    <div clas="card">
+      <div class="row">
+        <div class="col-md-12">
+          <h3 align="center">Mars Hemispheres</h3>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-1">
+        </div>
+        <div class="col-md-10">
+          {% for image in mars_data.hemisphere_image_urls %}
+          <div class="col-md-6">
+            <figure class="figure" style="border: thin solid grey">
+              <img align="center" class="figure-img" src="{{image.img_url}}" style="width:100%;">
+              <figcaption class="figure-caption"><h4>{{image.title}}</h4></figcaption>
+            </figure>
+          </div>
+          {% endfor %}
+        </div>
+        <div class="col-md-1">
+        </div> 
+      </div>   
+    </div>
 
   </div>
+
 </body>
 
 </html>
